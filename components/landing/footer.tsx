@@ -12,18 +12,18 @@ const LINK_GROUPS = [
     ],
   },
   {
-    title: "Company",
+    title: "Resources",
     links: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" },
+      { label: "Grant Database", href: "#" },
+      { label: "Tax Credit Guide", href: "#" },
+      { label: "FAQ", href: "#" },
     ],
   },
   {
     title: "Legal",
     links: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
+      { label: "Privacy Policy", href: "#" },
+      { label: "Terms of Service", href: "#" },
     ],
   },
 ];
@@ -40,6 +40,9 @@ export function Footer() {
             </Link>
             <p className="mt-2 max-w-xs text-sm text-muted-foreground">
               Discover the funding your business deserves.
+            </p>
+            <p className="mt-2 text-xs font-medium text-cred-green">
+              Helping small businesses find $47M+ in grants and credits
             </p>
             <div className="mt-3 flex items-center gap-3">
               <a

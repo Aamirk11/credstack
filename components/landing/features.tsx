@@ -1,13 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import {
-  Sparkles,
-  Receipt,
-  Clock,
-  CheckCircle,
-  FileText,
-  Download,
+  Radar,
+  Search,
+  Bell,
+  Target,
+  Bot,
+  FileSpreadsheet,
 } from "lucide-react";
 import {
   Card,
@@ -18,35 +19,52 @@ import {
 
 const FEATURES = [
   {
-    title: "Smart Matching",
+    title: "Never Miss a Grant Again",
     description:
-      "AI analyzes your business profile against thousands of programs",
-    icon: Sparkles,
+      "Our AI monitors 10,000+ federal, state, and local programs so you don't have to. Get notified the moment you're eligible.",
+    icon: Radar,
+    detail:
+      "Continuous scanning across all major grant databases with real-time eligibility alerts.",
   },
   {
-    title: "Tax Credit Discovery",
-    description: "Find credits your CPA might miss",
-    icon: Receipt,
+    title: "Credits Your CPA Missed",
+    description:
+      "The average small business leaves $23,000 in tax credits unclaimed. We find them in minutes.",
+    icon: Search,
+    detail:
+      "Deep analysis of R&D credits, WOTC, energy credits, and 40+ other federal and state programs.",
   },
   {
-    title: "Deadline Tracking",
-    description: "Never miss an application deadline",
-    icon: Clock,
+    title: "Zero Missed Deadlines",
+    description:
+      "Automatic alerts at 90, 60, 30, and 7 days. We've helped businesses submit 2,400+ applications on time.",
+    icon: Bell,
+    detail:
+      "Smart calendar with email and SMS reminders. Never lose a grant opportunity to a missed deadline.",
   },
   {
-    title: "Eligibility Checker",
-    description: "Know exactly what you qualify for",
-    icon: CheckCircle,
+    title: "Know Before You Apply",
+    description:
+      "See exactly which criteria you meet before spending hours on an application. 92% accuracy rate.",
+    icon: Target,
+    detail:
+      "Pre-qualification engine checks your profile against every requirement before you invest time.",
   },
   {
-    title: "Application Help",
-    description: "AI pre-fills forms and suggests improvements",
-    icon: FileText,
+    title: "AI-Powered Applications",
+    description:
+      "Our AI pre-fills applications using your profile data, saving an average of 12 hours per submission.",
+    icon: Bot,
+    detail:
+      "Intelligent form filling with smart suggestions and compliance checks built in.",
   },
   {
-    title: "CPA Reports",
-    description: "Share findings with your tax professional",
-    icon: Download,
+    title: "Tax-Ready Reports",
+    description:
+      "One-click reports your CPA can immediately use. Includes IRS form references, qualifying expense breakdowns, and claiming instructions.",
+    icon: FileSpreadsheet,
+    detail:
+      "Export-ready PDFs with form references, expense categorization, and step-by-step claiming guides.",
   },
 ];
 
@@ -63,6 +81,52 @@ const fadeUp: Variants = {
     transition: { duration: 0.4, ease: "easeOut" as const },
   },
 };
+
+function FeatureCard({
+  feature,
+}: {
+  feature: (typeof FEATURES)[number];
+}) {
+  const [flipped, setFlipped] = useState(false);
+
+  return (
+    <div
+      className="group relative h-full [perspective:1000px]"
+      onMouseEnter={() => setFlipped(true)}
+      onMouseLeave={() => setFlipped(false)}
+    >
+      <div
+        className="relative h-full transition-transform duration-500 [transform-style:preserve-3d]"
+        style={{
+          transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+        }}
+      >
+        {/* Front */}
+        <Card className="h-full [backface-visibility:hidden]">
+          <CardHeader>
+            <div className="mb-2 flex size-12 items-center justify-center rounded-xl bg-blue-50 transition-colors group-hover:bg-cred-blue/10">
+              <feature.icon className="size-6 text-cred-blue" />
+            </div>
+            <CardTitle className="text-base">{feature.title}</CardTitle>
+            <CardDescription className="text-sm leading-relaxed">
+              {feature.description}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+
+        {/* Back */}
+        <Card className="absolute inset-0 flex items-center justify-center border-cred-blue/30 bg-cred-blue/5 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+          <CardHeader className="text-center">
+            <feature.icon className="mx-auto mb-2 size-6 text-cred-blue" />
+            <CardDescription className="text-sm font-medium leading-relaxed text-foreground">
+              {feature.detail}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    </div>
+  );
+}
 
 export function Features() {
   return (
@@ -92,19 +156,21 @@ export function Features() {
           className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
           {FEATURES.map((feature) => (
-            <motion.div key={feature.title} variants={fadeUp}>
-              <Card className="h-full transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
-                <CardHeader>
-                  <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-blue-50">
-                    <feature.icon className="size-5 text-cred-blue" />
-                  </div>
-                  <CardTitle>{feature.title}</CardTitle>
-                  <CardDescription>{feature.description}</CardDescription>
-                </CardHeader>
-              </Card>
+            <motion.div key={feature.title} variants={fadeUp} className="min-h-[200px]">
+              <FeatureCard feature={feature} />
             </motion.div>
           ))}
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="mt-6 text-center text-xs text-muted-foreground"
+        >
+          Hover over any feature to learn more
+        </motion.p>
       </div>
     </section>
   );

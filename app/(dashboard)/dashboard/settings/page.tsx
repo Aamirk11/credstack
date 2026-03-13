@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useCredStackData } from "@/lib/hooks/use-credstack-data";
+import { useUpgradeModal } from "@/lib/hooks/use-upgrade-modal";
+import { PageTransition } from "@/components/shared/page-transition";
 import { toast } from "sonner";
 
 interface NotificationSetting {
@@ -55,6 +57,7 @@ const NOTIFICATION_SETTINGS: NotificationSetting[] = [
 
 export default function SettingsPage() {
   const { business } = useCredStackData();
+  const { open: openUpgrade } = useUpgradeModal();
 
   const [notifications, setNotifications] = useState<Record<string, boolean>>(
     () =>
@@ -72,6 +75,7 @@ export default function SettingsPage() {
   };
 
   return (
+    <PageTransition>
     <div className="space-y-4 max-w-2xl">
       {/* Page header */}
       <div>
@@ -98,7 +102,7 @@ export default function SettingsPage() {
           <Button
             size="sm"
             className="bg-cred-blue hover:bg-cred-blue-dark text-white gap-1"
-            onClick={() => toast("Pro upgrade coming soon! We'll notify you when it's available.", { icon: "🚀" })}
+            onClick={openUpgrade}
           >
             Upgrade
             <ArrowUpRight className="size-3" />
@@ -226,5 +230,6 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
     </div>
+    </PageTransition>
   );
 }

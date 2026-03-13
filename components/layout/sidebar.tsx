@@ -17,7 +17,7 @@ import { getBadgeCounts } from "@/lib/utils/calculations";
 import { useCredStackData } from "@/lib/hooks/use-credstack-data";
 import { Button } from "@/components/ui/button";
 import { CredStackLogo } from "@/components/shared/credstack-logo";
-import { toast } from "sonner";
+import { useUpgradeModal } from "@/lib/hooks/use-upgrade-modal";
 import type { LucideIcon } from "lucide-react";
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -34,6 +34,7 @@ export function Sidebar() {
   const { grants, taxCredits, applications, deadlines, business } =
     useCredStackData();
   const badges = getBadgeCounts(grants, taxCredits, applications, deadlines);
+  const { open: openUpgrade } = useUpgradeModal();
 
   return (
     <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 border-r border-border bg-white">
@@ -114,14 +115,7 @@ export function Sidebar() {
         <Button
           variant="outline"
           className="w-full justify-center gap-2 text-cred-blue border-cred-blue/30 hover:bg-cred-blue/5"
-          onClick={() =>
-            toast("Pro features include full eligibility details, AI applications, and CPA reports.", {
-              action: {
-                label: "Learn More",
-                onClick: () => {},
-              },
-            })
-          }
+          onClick={openUpgrade}
         >
           <Sparkles className="w-4 h-4" />
           Upgrade to Pro

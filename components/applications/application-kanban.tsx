@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -62,9 +63,12 @@ export function ApplicationKanban({ applications }: ApplicationKanbanProps) {
     <>
       <ScrollArea className="w-full -mx-1 px-1">
         <div className="flex gap-3 pb-4 min-w-[900px]">
-          {columns.map((col) => (
-            <div
+          {columns.map((col, colIndex) => (
+            <motion.div
               key={col.status}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: colIndex * 0.05 }}
               className="flex-1 min-w-[180px] max-w-[260px]"
             >
               {/* Column header */}
@@ -81,28 +85,52 @@ export function ApplicationKanban({ applications }: ApplicationKanbanProps) {
                 <span className="text-xs font-semibold text-foreground">
                   {col.config.label}
                 </span>
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 ml-auto h-4">
-                  {col.apps.length}
-                </Badge>
+                <motion.div
+                  key={col.apps.length}
+                  initial={{ scale: 1.3 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="ml-auto"
+                >
+                  <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                    {col.apps.length}
+                  </Badge>
+                </motion.div>
               </div>
 
               {/* Column body */}
               <div className="space-y-2 min-h-[180px] rounded-lg bg-muted/20 p-1.5">
-                {col.apps.length === 0 ? (
-                  <p className="text-[10px] text-muted-foreground text-center py-6">
-                    No applications
-                  </p>
-                ) : (
-                  col.apps.map((app) => (
-                    <ApplicationCard
-                      key={app.id}
-                      application={app}
-                      onClick={() => handleCardClick(app)}
-                    />
-                  ))
-                )}
+                <AnimatePresence mode="popLayout">
+                  {col.apps.length === 0 ? (
+                    <p className="text-[10px] text-muted-foreground text-center py-6">
+                      No applications
+                    </p>
+                  ) : (
+                    col.apps.map((app, appIndex) => (
+                      <motion.div
+                        key={app.id}
+                        layout
+                        layoutId={app.id}
+                        initial={{ opacity: 0, scale: 0.95, y: 8 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{
+                          duration: 0.25,
+                          delay: appIndex * 0.05,
+                          layout: { type: "spring", stiffness: 300, damping: 30 },
+                        }}
+                        className="shadow-sm hover:shadow-md transition-shadow rounded-lg"
+                      >
+                        <ApplicationCard
+                          application={app}
+                          onClick={() => handleCardClick(app)}
+                        />
+                      </motion.div>
+                    ))
+                  )}
+                </AnimatePresence>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </ScrollArea>

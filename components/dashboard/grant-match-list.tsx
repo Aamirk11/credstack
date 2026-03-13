@@ -12,6 +12,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { cn } from "@/lib/utils";
 import { formatCurrencyRange, daysUntil, formatDateShort, getDeadlineColor } from "@/lib/utils/format";
 import { toast } from "sonner";
+import { useUpgradeModal } from "@/lib/hooks/use-upgrade-modal";
 import type { GrantMatch } from "@/lib/types";
 
 interface GrantMatchListProps {
@@ -26,6 +27,7 @@ const MATCH_BORDER_COLOR: Record<string, string> = {
 
 export function GrantMatchList({ grants }: GrantMatchListProps) {
   const sorted = [...grants].sort((a, b) => b.matchScore - a.matchScore);
+  const { open: openUpgrade } = useUpgradeModal();
   const [favorites, setFavorites] = useState<Record<string, boolean>>(() => {
     const map: Record<string, boolean> = {};
     grants.forEach((g) => {
@@ -45,12 +47,7 @@ export function GrantMatchList({ grants }: GrantMatchListProps) {
   const handleProAction = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    toast("Upgrade to Pro to start applications directly.", {
-      action: {
-        label: "Learn More",
-        onClick: () => {},
-      },
-    });
+    openUpgrade();
   };
 
   if (sorted.length === 0) {

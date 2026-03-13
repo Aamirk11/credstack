@@ -8,6 +8,7 @@ import { getTotalCreditRange } from "@/lib/utils/calculations";
 import { TotalSavingsBanner } from "@/components/tax-credits/total-savings-banner";
 import { CreditEstimateChart } from "@/components/tax-credits/credit-estimate-chart";
 import { CreditCard } from "@/components/tax-credits/credit-card";
+import { PageTransition } from "@/components/shared/page-transition";
 import { toast } from "sonner";
 
 export default function TaxCreditsPage() {
@@ -36,6 +37,7 @@ export default function TaxCreditsPage() {
   ];
 
   return (
+    <PageTransition>
     <div className="space-y-4">
       {/* Page header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -113,5 +115,6 @@ export default function TaxCreditsPage() {
         </CardContent>
       </Card>
     </div>
+    </PageTransition>
   );
 }

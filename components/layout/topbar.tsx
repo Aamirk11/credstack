@@ -30,12 +30,17 @@ export function Topbar() {
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between h-16 px-4 sm:px-6 bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.05)]">
-      {/* Left: Logo on mobile, Page Title on desktop */}
+      {/* Left: Logo on mobile, Page Title + Greeting on desktop */}
       <div className="flex items-center gap-3">
         <div className="lg:hidden">
           <CredStackLogo size="sm" showText={false} />
         </div>
-        <h1 className="hidden lg:block text-lg font-semibold text-slate-900">{title}</h1>
+        <div className="hidden lg:flex lg:items-center lg:gap-3">
+          <h1 className="text-lg font-semibold text-slate-900">{title}</h1>
+          <span className="text-sm text-slate-400 font-normal">
+            Hi, {business.ownerName.split(" ")[0]}
+          </span>
+        </div>
       </div>
 
       {/* Right: Actions */}

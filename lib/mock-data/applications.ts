@@ -1,0 +1,58 @@
+import type { GrantApplication } from "@/lib/types";
+
+export const mockApplications: GrantApplication[] = [
+  {
+    id: "app-001",
+    grantId: "grant-001",
+    grantName: "Small Business Innovation Research (SBIR) Phase I",
+    agency: "National Science Foundation",
+    agencyInitials: "NSF",
+    status: "preparing",
+    amountRequested: 26_000_000,
+    deadline: "2026-05-15",
+    submittedDate: null,
+    lastUpdated: "2026-03-10",
+    notes:
+      "Technical proposal draft 60% complete. Need to finalize budget narrative and get letter of support from university partner.",
+    documentsUploaded: 3,
+    documentsRequired: 5,
+    nextStep: "Complete technical proposal Section 3 — prior research results",
+    completionPercentage: 60,
+  },
+  {
+    id: "app-002",
+    grantId: "grant-005",
+    grantName: "Illinois Small Business Development Grant",
+    agency: "Illinois DCEO",
+    agencyInitials: "DCEO",
+    status: "researching",
+    amountRequested: 10_000_000,
+    deadline: "2026-05-31",
+    submittedDate: null,
+    lastUpdated: "2026-03-08",
+    notes:
+      "Reviewing eligibility requirements. Need to prepare growth plan and job creation projections. Waiting for Q1 financials.",
+    documentsUploaded: 1,
+    documentsRequired: 4,
+    nextStep: "Draft 12-month growth plan with hiring milestones",
+    completionPercentage: 25,
+  },
+  {
+    id: "app-003",
+    grantId: "grant-010",
+    grantName: "Chicago MBE/WBE Business Development Program",
+    agency: "City of Chicago Office of Diversity",
+    agencyInitials: "CDOL",
+    status: "submitted",
+    amountRequested: 5_000_000,
+    deadline: "2026-06-01",
+    submittedDate: "2026-02-28",
+    lastUpdated: "2026-03-05",
+    notes:
+      "Application submitted on Feb 28. Received confirmation email. Expect to hear back within 60 days. May be asked for follow-up interview.",
+    documentsUploaded: 4,
+    documentsRequired: 4,
+    nextStep: "Await review committee decision — expected by April 28",
+    completionPercentage: 100,
+  },
+];

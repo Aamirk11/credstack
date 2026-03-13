@@ -1,12 +1,13 @@
 "use client";
 
-import { Clock, Star, ExternalLink } from "lucide-react";
+import { Clock, Star, ExternalLink, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { GrantMatch } from "@/lib/types";
 import { formatCurrencyRange, daysUntil, getDeadlineColor, formatDate } from "@/lib/utils/format";
 import { MATCH_STRENGTH_CONFIG, GRANT_TYPE_CONFIG } from "@/lib/utils/constants";
+import { toast } from "sonner";
 
 interface GrantDetailHeaderProps {
   grant: GrantMatch;
@@ -25,10 +26,10 @@ export function GrantDetailHeader({
   const typeConfig = GRANT_TYPE_CONFIG[grant.type];
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
+    <div className="space-y-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-center gap-1.5">
             <Badge className={cn(typeConfig.color, "text-xs")}>
               {typeConfig.label}
             </Badge>
@@ -46,31 +47,42 @@ export function GrantDetailHeader({
             </Badge>
           </div>
 
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
+          <h1 className="text-xl font-bold text-foreground sm:text-2xl">
             {grant.name}
           </h1>
 
-          <p className="text-muted-foreground">{grant.agency}</p>
+          <p className="text-sm text-muted-foreground">{grant.agency}</p>
         </div>
 
         <div className="flex gap-2 shrink-0">
-          <Button variant="outline" size="lg" onClick={onSave}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast.success("Link copied to clipboard!");
+            }}
+          >
+            <Share2 className="size-4" />
+            Share
+          </Button>
+          <Button variant="outline" size="sm" onClick={onSave}>
             <Star className="size-4" />
             Save
           </Button>
-          <Button size="lg" className="bg-cred-blue hover:bg-cred-blue-dark text-white" onClick={onStartApplication}>
+          <Button size="sm" className="bg-cred-blue hover:bg-cred-blue-dark text-white" onClick={onStartApplication}>
             <ExternalLink className="size-4" />
             Start Application
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-6">
+      <div className="flex flex-wrap items-center gap-4 sm:gap-6">
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
             Award Range
           </p>
-          <p className="text-xl font-bold text-cred-gold">
+          <p className="text-2xl sm:text-3xl font-bold text-cred-gold">
             {formatCurrencyRange(grant.amountMin, grant.amountMax)}
           </p>
         </div>
@@ -78,17 +90,17 @@ export function GrantDetailHeader({
         <div className="h-10 w-px bg-border hidden sm:block" />
 
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
             Deadline
           </p>
-          <div className={cn("flex items-center gap-2", deadlineColor)}>
-            <Clock className="size-4" />
-            <span className="text-lg font-semibold">
+          <div className={cn("flex items-center gap-1.5", deadlineColor)}>
+            <Clock className="size-3.5" />
+            <span className="text-base font-semibold">
               {formatDate(grant.deadline)}
             </span>
-            <span className="text-sm">
+            <span className="text-xs">
               {daysLeft > 0
-                ? `(${daysLeft} days left)`
+                ? `(${daysLeft}d left)`
                 : daysLeft === 0
                 ? "(Due today)"
                 : "(Expired)"}
@@ -99,10 +111,10 @@ export function GrantDetailHeader({
         <div className="h-10 w-px bg-border hidden sm:block" />
 
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
-            Match Score
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
+            Match
           </p>
-          <p className="text-lg font-semibold text-foreground">
+          <p className="text-base font-semibold text-foreground">
             {grant.matchScore}%
           </p>
         </div>
@@ -110,10 +122,10 @@ export function GrantDetailHeader({
         <div className="h-10 w-px bg-border hidden sm:block" />
 
         <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wide">
+          <p className="text-[10px] text-muted-foreground uppercase tracking-wide">
             Past Awardees
           </p>
-          <p className="text-lg font-semibold text-foreground">
+          <p className="text-base font-semibold text-foreground">
             {grant.pastAwardees.toLocaleString()}
           </p>
         </div>

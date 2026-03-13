@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Shield, Trash2, Mail, CreditCard } from "lucide-react";
+import Link from "next/link";
+import { Bell, Shield, Trash2, Mail, CreditCard, ArrowUpRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useCredStackData } from "@/lib/hooks/use-credstack-data";
+import { toast } from "sonner";
 
 interface NotificationSetting {
   id: string;
@@ -61,62 +63,92 @@ export default function SettingsPage() {
       )
   );
 
-  const toggleNotification = (id: string) => {
-    setNotifications((prev) => ({ ...prev, [id]: !prev[id] }));
+  const toggleNotification = (id: string, label: string) => {
+    setNotifications((prev) => {
+      const newVal = !prev[id];
+      toast.success(`${label} ${newVal ? "enabled" : "disabled"}`);
+      return { ...prev, [id]: newVal };
+    });
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-4 max-w-2xl">
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-0.5">
           Manage your notification preferences and account settings
         </p>
       </div>
 
+      {/* Current Plan */}
+      <Card className="border-cred-blue/20 bg-blue-50/30">
+        <CardContent className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cred-blue/10">
+              <CreditCard className="size-4 text-cred-blue" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-foreground">Current Plan: Free</p>
+              <p className="text-[10px] text-muted-foreground">
+                Upgrade to Pro for AI pre-fill, CPA reports, and more
+              </p>
+            </div>
+          </div>
+          <Button
+            size="sm"
+            className="bg-cred-blue hover:bg-cred-blue-dark text-white gap-1"
+            onClick={() => toast("Pro upgrade coming soon! We'll notify you when it's available.", { icon: "🚀" })}
+          >
+            Upgrade
+            <ArrowUpRight className="size-3" />
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Notification Preferences */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <Bell className="size-4 text-cred-blue" />
-            <CardTitle>Notification Preferences</CardTitle>
+            <Bell className="size-3.5 text-cred-blue" />
+            <CardTitle className="text-base">Notification Preferences</CardTitle>
           </div>
-          <CardDescription>
+          <CardDescription className="text-xs">
             Choose which email notifications you&apos;d like to receive
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           {NOTIFICATION_SETTINGS.map((setting) => (
             <div
               key={setting.id}
-              className="flex items-start gap-3 py-1"
+              className="flex items-start gap-2.5 py-0.5"
             >
               <Checkbox
                 checked={notifications[setting.id]}
-                onCheckedChange={() => toggleNotification(setting.id)}
+                onCheckedChange={() => toggleNotification(setting.id, setting.label)}
                 id={setting.id}
                 className="mt-0.5"
               />
-              <div className="space-y-0.5">
+              <div className="space-y-0">
                 <Label
                   htmlFor={setting.id}
-                  className="text-sm font-medium cursor-pointer"
+                  className="text-xs font-medium cursor-pointer"
                 >
                   {setting.label}
                 </Label>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground">
                   {setting.description}
                 </p>
               </div>
             </div>
           ))}
-          <div className="pt-2">
+          <div className="pt-1">
             <Button
               variant="outline"
               size="sm"
+              className="text-xs h-7"
               onClick={() =>
-                alert("Notification preferences saved! (Demo mode)")
+                toast.success("Notification preferences saved!")
               }
             >
               Save Preferences
@@ -127,19 +159,19 @@ export default function SettingsPage() {
 
       {/* Account */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <Shield className="size-4 text-cred-blue" />
-            <CardTitle>Account</CardTitle>
+            <Shield className="size-3.5 text-cred-blue" />
+            <CardTitle className="text-base">Account</CardTitle>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Mail className="size-4 text-muted-foreground" />
+              <Mail className="size-3.5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">Email</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs font-medium">Email</p>
+                <p className="text-[10px] text-muted-foreground">
                   {business.ownerEmail}
                 </p>
               </div>
@@ -148,41 +180,46 @@ export default function SettingsPage() {
           <Separator />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <CreditCard className="size-4 text-muted-foreground" />
+              <CreditCard className="size-3.5 text-muted-foreground" />
               <div>
-                <p className="text-sm font-medium">Plan</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs font-medium">Plan</p>
+                <p className="text-[10px] text-muted-foreground">
                   Currently on the free tier
                 </p>
               </div>
             </div>
-            <Badge variant="secondary">Free Plan</Badge>
+            <Badge variant="secondary" className="text-[10px]">Free Plan</Badge>
           </div>
         </CardContent>
       </Card>
 
       {/* Danger Zone */}
       <Card className="border-red-200">
-        <CardHeader>
+        <CardHeader className="pb-2">
           <div className="flex items-center gap-2">
-            <Trash2 className="size-4 text-red-500" />
-            <CardTitle className="text-red-600">Danger Zone</CardTitle>
+            <Trash2 className="size-3.5 text-red-500" />
+            <CardTitle className="text-base text-red-600">Danger Zone</CardTitle>
           </div>
-          <CardDescription>
+          <CardDescription className="text-xs">
             Irreversible actions that affect your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-foreground">
+              <p className="text-xs font-medium text-foreground">
                 Delete Account
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground">
                 Permanently delete your account and all associated data
               </p>
             </div>
-            <Button variant="destructive" size="sm" disabled>
+            <Button
+              variant="destructive"
+              size="sm"
+              className="text-xs h-7"
+              onClick={() => toast.error("Account deletion requires contacting support@credstack.com")}
+            >
               Delete Account
             </Button>
           </div>

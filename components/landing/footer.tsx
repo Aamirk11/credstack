@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import { Twitter, Linkedin } from "lucide-react";
+import { CredStackLogo } from "@/components/shared/credstack-logo";
 
 const LINK_GROUPS = [
   {
@@ -29,20 +30,33 @@ const LINK_GROUPS = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-white py-12">
+    <footer className="border-t border-border bg-white py-8 sm:py-10">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
-              <Shield className="size-6 text-cred-blue" />
-              <span className="text-lg font-bold text-cred-blue">
-                CredStack
-              </span>
+            <Link href="/" className="inline-block">
+              <CredStackLogo size="sm" />
             </Link>
-            <p className="mt-3 max-w-xs text-sm text-muted-foreground">
+            <p className="mt-2 max-w-xs text-sm text-muted-foreground">
               Discover the funding your business deserves.
             </p>
+            <div className="mt-3 flex items-center gap-3">
+              <a
+                href="#"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="Twitter"
+              >
+                <Twitter className="size-4" />
+              </a>
+              <a
+                href="#"
+                className="text-muted-foreground transition-colors hover:text-foreground"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="size-4" />
+              </a>
+            </div>
           </div>
 
           {/* Link columns */}
@@ -51,7 +65,7 @@ export function Footer() {
               <h3 className="text-sm font-semibold text-foreground">
                 {group.title}
               </h3>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-2 space-y-1.5">
                 {group.links.map((link) => (
                   <li key={link.label}>
                     <a
@@ -67,8 +81,8 @@ export function Footer() {
           ))}
         </div>
 
-        <div className="mt-12 border-t border-border pt-8">
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <div className="mt-8 border-t border-border pt-6">
+          <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
             <p className="text-xs text-muted-foreground">
               &copy; 2026 CredStack. All rights reserved.
             </p>

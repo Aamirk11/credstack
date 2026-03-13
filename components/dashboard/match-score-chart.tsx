@@ -24,20 +24,20 @@ export function MatchScoreChart() {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-2">
         <CardTitle className="text-base">Match Strength</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         <div className="flex flex-col items-center">
-          <div className="relative w-40 h-40">
+          <div className="relative w-36 h-36 min-h-[144px]">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
-                  innerRadius={45}
-                  outerRadius={70}
+                  innerRadius={40}
+                  outerRadius={65}
                   paddingAngle={3}
                   dataKey="value"
                   strokeWidth={0}
@@ -51,12 +51,12 @@ export function MatchScoreChart() {
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-2xl font-bold text-slate-900">{total}</span>
-              <span className="text-xs text-slate-500">matches</span>
+              <span className="text-[10px] text-slate-500">matches</span>
             </div>
           </div>
 
           {/* Legend */}
-          <div className="flex flex-col gap-2 mt-4 w-full">
+          <div className="flex flex-col gap-1.5 mt-3 w-full">
             {[
               { label: "Strong Match", count: counts.strong, color: "bg-cred-green" },
               { label: "Possible Match", count: counts.possible, color: "bg-amber-500" },
@@ -64,10 +64,12 @@ export function MatchScoreChart() {
             ].map((item) => (
               <div key={item.label} className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${item.color}`} />
-                  <span className="text-slate-600">{item.label}</span>
+                  <span className={`w-2 h-2 rounded-full ${item.color}`} />
+                  <span className="text-xs text-slate-600">{item.label}</span>
                 </div>
-                <span className="font-semibold text-slate-900">{item.count}</span>
+                <span className="text-xs font-semibold text-slate-900">
+                  {item.count} <span className="text-slate-400 font-normal">({total > 0 ? Math.round((item.count / total) * 100) : 0}%)</span>
+                </span>
               </div>
             ))}
           </div>

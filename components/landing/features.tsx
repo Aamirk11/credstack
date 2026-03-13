@@ -66,7 +66,7 @@ const fadeUp: Variants = {
 
 export function Features() {
   return (
-    <section id="features" className="bg-slate-50 py-20 sm:py-24">
+    <section id="features" className="bg-slate-50 py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -78,7 +78,7 @@ export function Features() {
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Everything You Need to Find Free Money
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">
             Powerful tools to discover, qualify for, and apply to grants and tax
             credits
           </p>
@@ -89,11 +89,11 @@ export function Features() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3"
         >
           {FEATURES.map((feature) => (
             <motion.div key={feature.title} variants={fadeUp}>
-              <Card className="h-full transition-shadow hover:shadow-md">
+              <Card className="h-full transition-all duration-200 hover:scale-[1.02] hover:shadow-lg">
                 <CardHeader>
                   <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-blue-50">
                     <feature.icon className="size-5 text-cred-blue" />

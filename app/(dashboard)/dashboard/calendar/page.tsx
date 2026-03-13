@@ -21,51 +21,51 @@ export default function CalendarPage() {
   ).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Page header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground">
           Deadline Calendar
         </h1>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-xs text-muted-foreground mt-0.5">
           Track all your grant and tax deadlines in one place
         </p>
       </div>
 
       {/* Summary */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-3">
         <Card>
-          <CardContent className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-cred-blue/10">
-              <Clock className="size-5 text-cred-blue" />
+          <CardContent className="flex items-center gap-2.5 p-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cred-blue/10">
+              <Clock className="size-4 text-cred-blue" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-xl font-bold text-foreground">
                 {upcomingCount}
               </p>
-              <p className="text-xs text-muted-foreground">
-                Upcoming Deadlines
+              <p className="text-[10px] text-muted-foreground">
+                Upcoming
               </p>
             </div>
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-100">
-              <AlertTriangle className="size-5 text-red-600" />
+          <CardContent className="flex items-center gap-2.5 p-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-100">
+              <AlertTriangle className="size-4 text-red-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-foreground">
+              <p className="text-xl font-bold text-foreground">
                 {urgentCount}
               </p>
-              <p className="text-xs text-muted-foreground">Urgent</p>
+              <p className="text-[10px] text-muted-foreground">Urgent</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Two-column layout */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      {/* Single column on mobile, two-column on desktop */}
+      <div className="flex flex-col gap-4 lg:grid lg:grid-cols-3">
         <div className="lg:col-span-2">
           <DeadlineCalendar
             deadlines={deadlines}

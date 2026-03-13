@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -22,13 +23,45 @@ const AVATARS = [
   "bg-violet-400",
 ];
 
+function useCountUp(target: number, duration = 2000) {
+  const [value, setValue] = useState(0);
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+
+    const startTime = performance.now();
+
+    function animate(currentTime: number) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(eased * target);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        setValue(target);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }, [target, duration]);
+
+  return value;
+}
+
 export function Hero() {
+  const countValue = useCountUp(10.2, 2200);
+
   return (
     <section className="relative overflow-hidden bg-background">
       {/* Subtle gradient bg */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-blue-50/60 to-transparent" />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-36">
+      <div className="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20 lg:px-8 lg:py-28">
         <div className="mx-auto max-w-3xl text-center">
           {/* Headline */}
           <motion.h1
@@ -48,10 +81,11 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             custom={1}
-            className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl"
+            className="mx-auto mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg"
           >
-            CredStack uses AI to find grants, tax credits, and incentives your
-            small business qualifies for — in minutes, not months.
+            95% of small businesses miss out on grants they qualify for.
+            CredStack scans 10,000+ programs and shows you exactly what&apos;s
+            available — no accountant required.
           </motion.p>
 
           {/* CTAs */}
@@ -60,7 +94,7 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             custom={2}
-            className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+            className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row"
           >
             <Button
               render={<Link href="/onboarding" />}
@@ -80,17 +114,25 @@ export function Hero() {
             </Button>
           </motion.div>
 
-          {/* Dollar counter */}
+          {/* Dollar counter with count-up and floating animation */}
           <motion.div
             variants={fadeIn}
             initial="hidden"
             animate="visible"
             custom={3}
-            className="mt-12 flex flex-col items-center gap-2"
+            className="mt-10 flex flex-col items-center gap-2"
           >
-            <p className="text-5xl font-extrabold text-cred-gold sm:text-6xl">
-              $10.2B
-            </p>
+            <motion.p
+              animate={{ y: [0, -6, 0] }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              className="text-5xl font-extrabold text-cred-gold sm:text-6xl"
+            >
+              ${countValue.toFixed(1)}B
+            </motion.p>
             <p className="text-sm text-muted-foreground">
               in grants and credits go unclaimed every year
             </p>
@@ -102,7 +144,7 @@ export function Hero() {
             initial="hidden"
             animate="visible"
             custom={4}
-            className="mt-10 flex items-center justify-center gap-3"
+            className="mt-8 flex items-center justify-center gap-3"
           >
             <div className="flex -space-x-2">
               {AVATARS.map((color, i) => (

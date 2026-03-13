@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   Target,
   Zap,
@@ -9,6 +10,7 @@ import {
   ArrowDownAZ,
   Clock,
   DollarSign,
+  ArrowRight,
 } from "lucide-react";
 import { useCredStackData } from "@/lib/hooks/use-credstack-data";
 import { PageHeader } from "@/components/layout/page-header";
@@ -38,7 +40,7 @@ type CategoryFilter = "all" | "grant" | "tax-credit" | "subsidy" | "loan";
 type SortOption = "match" | "deadline" | "amount";
 
 export default function DashboardPage() {
-  const { grants, taxCredits, applications } = useCredStackData();
+  const { grants, taxCredits, applications, business } = useCredStackData();
   const [activeTab, setActiveTab] = useState<CategoryFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("match");
 
@@ -49,6 +51,9 @@ export default function DashboardPage() {
 
   const totalMin = grantRange.totalMin + creditRange.totalLow;
   const totalMax = grantRange.totalMax + creditRange.totalHigh;
+
+  // Find most recent in-progress application
+  const inProgressApp = applications.find((a) => a.status === "researching" || a.status === "preparing");
 
   const filteredGrants = useMemo(() => {
     let filtered: GrantMatch[] =
@@ -77,21 +82,44 @@ export default function DashboardPage() {
   }, [grants, activeTab, sortBy]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Welcome greeting */}
+      <p className="text-sm text-slate-500">
+        Welcome back, <span className="font-medium text-slate-700">{business.name.split(" ")[0]}</span>
+      </p>
+
       {/* Page Header */}
       <PageHeader
         title="Your Opportunities"
         description={`Potential value: ${formatCurrencyRange(totalMin, totalMax)}`}
+        breadcrumb="Dashboard / Overview"
       />
 
+      {/* Quick Action Bar */}
+      {inProgressApp && (
+        <Link
+          href={`/dashboard/applications/${inProgressApp.id}`}
+          className="flex items-center justify-between gap-3 px-4 py-3 rounded-lg bg-cred-blue/5 border border-cred-blue/15 hover:bg-cred-blue/10 transition-colors group"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <FileText className="w-4 h-4 text-cred-blue shrink-0" />
+            <span className="text-sm font-medium text-cred-blue truncate">
+              Continue: {inProgressApp.grantName}
+            </span>
+          </div>
+          <ArrowRight className="w-4 h-4 text-cred-blue shrink-0 group-hover:translate-x-0.5 transition-transform" />
+        </Link>
+      )}
+
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <StatCard
           title="Total Matches"
           value={String(grants.length)}
           subtitle="programs found"
           icon={Target}
           color="blue"
+          index={0}
         />
         <StatCard
           title="Strong Matches"
@@ -99,6 +127,7 @@ export default function DashboardPage() {
           subtitle="high confidence"
           icon={Zap}
           color="green"
+          index={1}
         />
         <StatCard
           title="Tax Credits"
@@ -106,6 +135,7 @@ export default function DashboardPage() {
           subtitle="identified"
           icon={Receipt}
           color="gold"
+          index={2}
         />
         <StatCard
           title="Applications"
@@ -113,6 +143,7 @@ export default function DashboardPage() {
           subtitle="in progress"
           icon={FileText}
           color="slate"
+          index={3}
         />
       </div>
 
@@ -120,16 +151,16 @@ export default function DashboardPage() {
       <SavingsSummary />
 
       {/* Main Content: Two Column Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left Column: Grant List with Filters */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 space-y-3">
           {/* Filters Row */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <Tabs
               value={activeTab}
               onValueChange={(val) => setActiveTab(val as CategoryFilter)}
             >
-              <TabsList>
+              <TabsList className="overflow-x-auto flex-nowrap max-w-full">
                 <TabsTrigger value="all">All</TabsTrigger>
                 <TabsTrigger value="grant">Grants</TabsTrigger>
                 <TabsTrigger value="tax-credit">Tax Credits</TabsTrigger>
@@ -173,7 +204,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Right Column: Chart + Deadlines */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <MatchScoreChart />
           <DeadlineTicker />
         </div>

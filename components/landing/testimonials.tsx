@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { Quote } from "lucide-react";
+import { Quote, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 const TESTIMONIALS = [
@@ -11,6 +11,7 @@ const TESTIMONIALS = [
     name: "Sarah Kim",
     title: "CEO",
     company: "Luminary Labs",
+    rating: 5,
   },
   {
     quote:
@@ -18,6 +19,7 @@ const TESTIMONIALS = [
     name: "James Rodriguez",
     title: "Founder",
     company: "Atlas Security",
+    rating: 5,
   },
   {
     quote:
@@ -25,6 +27,7 @@ const TESTIMONIALS = [
     name: "Priya Patel",
     title: "CFO",
     company: "Brightpath Analytics",
+    rating: 5,
   },
 ];
 
@@ -44,7 +47,7 @@ const fadeUp: Variants = {
 
 export function Testimonials() {
   return (
-    <section className="bg-slate-50 py-20 sm:py-24">
+    <section className="bg-slate-50 py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -56,7 +59,7 @@ export function Testimonials() {
           <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Trusted by Small Business Owners
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
+          <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">
             See how businesses like yours are finding free money
           </p>
         </motion.div>
@@ -66,18 +69,27 @@ export function Testimonials() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
-          className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-3"
+          className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3"
         >
           {TESTIMONIALS.map((testimonial) => (
             <motion.div key={testimonial.name} variants={fadeUp}>
               <Card className="h-full">
-                <CardContent className="flex flex-col gap-4">
-                  <Quote className="size-8 text-cred-blue/20" />
+                <CardContent className="flex flex-col gap-3 p-5">
+                  {/* Star Rating */}
+                  <div className="flex gap-0.5">
+                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                      <Star
+                        key={i}
+                        className="size-4 fill-cred-gold text-cred-gold"
+                      />
+                    ))}
+                  </div>
+                  <Quote className="size-6 text-cred-blue/20" />
                   <blockquote className="flex-1 text-sm leading-relaxed text-foreground">
                     &ldquo;{testimonial.quote}&rdquo;
                   </blockquote>
-                  <div className="flex items-center gap-3 border-t border-border pt-4">
-                    <div className="flex size-10 items-center justify-center rounded-full bg-cred-blue text-sm font-bold text-white">
+                  <div className="flex items-center gap-3 border-t border-border pt-3">
+                    <div className="flex size-9 items-center justify-center rounded-full bg-cred-blue text-xs font-bold text-white">
                       {testimonial.name
                         .split(" ")
                         .map((n) => n[0])

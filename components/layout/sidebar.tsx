@@ -9,7 +9,6 @@ import {
   Calendar,
   Building2,
   Settings,
-  Shield,
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,6 +16,8 @@ import { NAV_ITEMS, APP_NAME } from "@/lib/utils/constants";
 import { getBadgeCounts } from "@/lib/utils/calculations";
 import { useCredStackData } from "@/lib/hooks/use-credstack-data";
 import { Button } from "@/components/ui/button";
+import { CredStackLogo } from "@/components/shared/credstack-logo";
+import { toast } from "sonner";
 import type { LucideIcon } from "lucide-react";
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -38,10 +39,7 @@ export function Sidebar() {
     <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 border-r border-border bg-white">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-6 h-16 border-b border-border">
-        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-cred-blue">
-          <Shield className="w-4.5 h-4.5 text-white" />
-        </div>
-        <span className="text-lg font-bold text-cred-blue">{APP_NAME}</span>
+        <CredStackLogo size="sm" />
       </div>
 
       {/* Navigation */}
@@ -60,7 +58,8 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors relative",
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 relative",
+                "hover:translate-x-1",
                 isActive
                   ? "bg-blue-50 text-blue-700 before:absolute before:left-0 before:top-1.5 before:bottom-1.5 before:w-[3px] before:rounded-full before:bg-cred-blue"
                   : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
@@ -99,9 +98,14 @@ export function Sidebar() {
             {business.name.charAt(0)}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-slate-900 truncate">
-              {business.name}
-            </p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium text-slate-900 truncate">
+                {business.name}
+              </p>
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-500 uppercase tracking-wide shrink-0">
+                Free
+              </span>
+            </div>
             <p className="text-xs text-slate-500 truncate">
               {business.city}, {business.state}
             </p>
@@ -110,6 +114,14 @@ export function Sidebar() {
         <Button
           variant="outline"
           className="w-full justify-center gap-2 text-cred-blue border-cred-blue/30 hover:bg-cred-blue/5"
+          onClick={() =>
+            toast("Pro features include full eligibility details, AI applications, and CPA reports.", {
+              action: {
+                label: "Learn More",
+                onClick: () => {},
+              },
+            })
+          }
         >
           <Sparkles className="w-4 h-4" />
           Upgrade to Pro

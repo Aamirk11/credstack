@@ -4,24 +4,24 @@ import {
   Building2,
   DollarSign,
   Users,
-  Briefcase,
   Edit,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { useCredStackData } from "@/lib/hooks/use-credstack-data";
 import { formatCurrency } from "@/lib/utils/format";
+import { toast } from "sonner";
 
 function InfoRow({ label, value }: { label: string; value: string | number | boolean | null | undefined }) {
   if (value === null || value === undefined) return null;
   const displayValue = typeof value === "boolean" ? (value ? "Yes" : "No") : String(value);
 
   return (
-    <div className="flex justify-between py-2 border-b border-border/50 last:border-0">
-      <span className="text-sm text-muted-foreground">{label}</span>
-      <span className="text-sm font-medium text-foreground text-right">
+    <div className="flex justify-between py-1.5 border-b border-border/50 last:border-0">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className="text-xs font-medium text-foreground text-right">
         {displayValue}
       </span>
     </div>
@@ -35,6 +35,15 @@ const DEMOGRAPHIC_LABELS: Record<string, string> = {
   disabled: "Disability-Owned",
   lgbtq: "LGBTQ-Owned",
   hubzone: "HUBZone",
+};
+
+const DEMOGRAPHIC_COLORS: Record<string, string> = {
+  minority: "bg-blue-100 text-blue-700 border-blue-200",
+  women: "bg-pink-100 text-pink-700 border-pink-200",
+  veteran: "bg-green-100 text-green-700 border-green-200",
+  disabled: "bg-purple-100 text-purple-700 border-purple-200",
+  lgbtq: "bg-indigo-100 text-indigo-700 border-indigo-200",
+  hubzone: "bg-amber-100 text-amber-700 border-amber-200",
 };
 
 const ENTITY_LABELS: Record<string, string> = {
@@ -60,39 +69,40 @@ export default function ProfilePage() {
   const { business } = useCredStackData();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Page header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
             Business Profile
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs text-muted-foreground mt-0.5">
             Your business information used for matching grants and credits
           </p>
         </div>
         <Button
           variant="outline"
-          className="gap-2"
+          size="sm"
+          className="gap-1.5 shrink-0"
           onClick={() =>
-            alert("Edit Profile would redirect to onboarding flow.")
+            toast("Profile editing coming in Pro. Current profile was set during onboarding.", { icon: "✏️" })
           }
         >
-          <Edit className="size-4" />
+          <Edit className="size-3.5" />
           Edit Profile
         </Button>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         {/* Business Info */}
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Building2 className="size-4 text-cred-blue" />
-              <CardTitle>Business Information</CardTitle>
+              <Building2 className="size-3.5 text-cred-blue" />
+              <CardTitle className="text-base">Business Information</CardTitle>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <InfoRow label="Business Name" value={business.name} />
             <InfoRow label="Legal Name" value={business.legalName} />
             <InfoRow
@@ -113,13 +123,13 @@ export default function ProfilePage() {
 
         {/* Financials */}
         <Card>
-          <CardHeader>
+          <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <DollarSign className="size-4 text-cred-gold" />
-              <CardTitle>Financials</CardTitle>
+              <DollarSign className="size-3.5 text-cred-gold" />
+              <CardTitle className="text-base">Financials</CardTitle>
             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             <InfoRow
               label="Annual Revenue"
               value={formatCurrency(business.annualRevenue)}
@@ -151,15 +161,15 @@ export default function ProfilePage() {
 
         {/* Demographics */}
         <Card className="md:col-span-2">
-          <CardHeader>
+          <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Users className="size-4 text-purple-600" />
-              <CardTitle>Demographics & Certifications</CardTitle>
+              <Users className="size-3.5 text-purple-600" />
+              <CardTitle className="text-base">Demographics & Certifications</CardTitle>
             </div>
           </CardHeader>
           <CardContent>
             {business.demographics.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 No demographic certifications on file.
               </p>
             ) : (
@@ -167,8 +177,10 @@ export default function ProfilePage() {
                 {business.demographics.map((d) => (
                   <Badge
                     key={d}
-                    variant="secondary"
-                    className="text-sm px-3 py-1"
+                    className={cn(
+                      "text-xs px-3 py-1 border",
+                      DEMOGRAPHIC_COLORS[d] || "bg-slate-100 text-slate-700 border-slate-200"
+                    )}
                   >
                     {DEMOGRAPHIC_LABELS[d] || d}
                   </Badge>

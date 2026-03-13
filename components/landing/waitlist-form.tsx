@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,16 +28,17 @@ const BUSINESS_TYPES = [
 export function WaitlistForm() {
   const [email, setEmail] = useState("");
   const [businessType, setBusinessType] = useState("");
-  const [submitted, setSubmitted] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email) return;
-    setSubmitted(true);
+    toast.success("You're on the list! We'll be in touch soon.");
+    setEmail("");
+    setBusinessType("");
   }
 
   return (
-    <section className="bg-cred-blue py-20 sm:py-24">
+    <section className="bg-cred-blue py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -48,14 +50,14 @@ export function WaitlistForm() {
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
             Ready to Find Your Free Money?
           </h2>
-          <p className="mt-4 text-blue-100">
-            Join 2,400+ businesses already discovering free money
+          <p className="mt-3 text-blue-100">
+            Join 2,400+ businesses. Limited early-bird pricing available.
           </p>
 
-          {!submitted ? (
+          <div className="mx-auto mt-6 max-w-lg rounded-xl border border-white/20 bg-white/5 p-4 shadow-lg backdrop-blur-sm sm:p-6">
             <form
               onSubmit={handleSubmit}
-              className="mt-8 flex flex-col gap-3 sm:flex-row"
+              className="flex flex-col gap-3 sm:flex-row"
             >
               <Input
                 type="email"
@@ -63,10 +65,10 @@ export function WaitlistForm() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-12 flex-1 border-white/20 bg-white/10 text-white placeholder:text-blue-200 focus-visible:border-white focus-visible:ring-white/30"
+                className="h-11 flex-1 border-white/20 bg-white/10 text-white placeholder:text-blue-200 focus-visible:border-white focus-visible:ring-white/30"
               />
               <Select value={businessType} onValueChange={(val: string | null) => setBusinessType(val ?? "")}>
-                <SelectTrigger className="h-12 w-full border-white/20 bg-white/10 text-white data-placeholder:text-blue-200 sm:w-48">
+                <SelectTrigger className="h-11 w-full border-white/20 bg-white/10 text-white data-placeholder:text-blue-200 sm:w-48">
                   <SelectValue placeholder="Business type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -80,27 +82,16 @@ export function WaitlistForm() {
               <Button
                 type="submit"
                 size="lg"
-                className="h-12 gap-2 bg-white px-6 text-cred-blue hover:bg-blue-50"
+                className="h-11 gap-2 bg-white px-6 text-cred-blue hover:bg-blue-50"
               >
-                Join the Waitlist
+                Join Waitlist
                 <ArrowRight className="size-4" />
               </Button>
             </form>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-8 flex flex-col items-center gap-3 rounded-xl bg-white/10 px-6 py-8 backdrop-blur"
-            >
-              <CheckCircle className="size-12 text-cred-green-light" />
-              <p className="text-lg font-semibold text-white">
-                You&apos;re on the list!
-              </p>
-              <p className="text-sm text-blue-100">
-                We&apos;ll be in touch soon.
-              </p>
-            </motion.div>
-          )}
+            <p className="mt-3 text-xs text-blue-200/80">
+              Free to join. No credit card required.
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>

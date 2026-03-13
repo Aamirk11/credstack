@@ -1,5 +1,7 @@
 "use client";
 
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -24,46 +26,72 @@ interface StepFinancialsProps {
   onChange: (data: FinancialsData) => void;
 }
 
+function FieldCheck({ show }: { show: boolean }) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.span
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          className="inline-flex"
+        >
+          <CheckCircle className="size-4 text-cred-green" />
+        </motion.span>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export function StepFinancials({ data, onChange }: StepFinancialsProps) {
   function update(field: keyof FinancialsData, value: string) {
     onChange({ ...data, [field]: value });
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
         <h2 className="text-xl font-semibold text-foreground">
           Financial Information
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          We use this to estimate tax credits and match grant requirements.
+          This helps us estimate tax credits and match grant size requirements.
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Revenue Range */}
-        <div className="space-y-3">
-          <Label>Annual Revenue</Label>
+        <div className="space-y-2">
+          <Label className="flex items-center gap-1.5">
+            Annual Revenue
+            <FieldCheck show={data.revenueRange.length > 0} />
+          </Label>
           <RadioGroup
             value={data.revenueRange}
             onValueChange={(val: string | null) => { if (val) update("revenueRange", val); }}
-            className="grid grid-cols-2 gap-3"
+            className="grid grid-cols-2 gap-2"
           >
             {REVENUE_RANGES.map((range) => (
               <label
                 key={range.value}
-                className="flex cursor-pointer items-center gap-3 rounded-lg border border-border px-4 py-3 transition-colors hover:bg-muted has-[:checked]:border-cred-blue has-[:checked]:bg-blue-50"
+                className="flex cursor-pointer items-center gap-3 rounded-lg border border-border px-3 py-2.5 transition-colors hover:bg-muted has-[:checked]:border-cred-blue has-[:checked]:bg-blue-50"
               >
                 <RadioGroupItem value={range.value} />
                 <span className="text-sm font-medium">{range.label}</span>
               </label>
             ))}
           </RadioGroup>
+          <p className="text-xs text-muted-foreground">
+            Revenue determines eligibility for SBA and size-based programs
+          </p>
         </div>
 
         {/* Employee Count */}
-        <div className="space-y-2">
-          <Label htmlFor="employeeCount">Number of Employees</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="employeeCount" className="flex items-center gap-1.5">
+            Number of Employees
+            <FieldCheck show={data.employeeCount.length > 0} />
+          </Label>
           <Input
             id="employeeCount"
             type="number"
@@ -71,15 +99,19 @@ export function StepFinancials({ data, onChange }: StepFinancialsProps) {
             min={0}
             value={data.employeeCount}
             onChange={(e) => update("employeeCount", e.target.value)}
+            className="h-11"
           />
           <p className="text-xs text-muted-foreground">
-            Employee count affects SBA size standards and program eligibility
+            Each employee can unlock WOTC, training, and hiring credits
           </p>
         </div>
 
         {/* Annual R&D Spend */}
-        <div className="space-y-2">
-          <Label htmlFor="rdSpend">Annual R&D Spend (estimate)</Label>
+        <div className="space-y-1.5">
+          <Label htmlFor="rdSpend" className="flex items-center gap-1.5">
+            Annual R&D Spend (estimate)
+            <FieldCheck show={data.annualRdSpend.length > 0} />
+          </Label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
               $
@@ -89,14 +121,13 @@ export function StepFinancials({ data, onChange }: StepFinancialsProps) {
               type="number"
               placeholder="50000"
               min={0}
-              className="pl-7"
+              className="h-11 pl-7"
               value={data.annualRdSpend}
               onChange={(e) => update("annualRdSpend", e.target.value)}
             />
           </div>
           <p className="text-xs text-muted-foreground">
-            R&D spend includes wages for qualified activities, supplies, and
-            contract research
+            R&D tax credits can return 6-14% of qualifying expenses
           </p>
         </div>
       </div>

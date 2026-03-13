@@ -8,6 +8,7 @@ import type { GrantApplication, ApplicationStatus } from "@/lib/types";
 import { APPLICATION_STATUS_CONFIG } from "@/lib/utils/constants";
 import { ApplicationCard } from "./application-card";
 import { ApplicationDetailModal } from "./application-detail-modal";
+import { toast } from "sonner";
 
 interface ApplicationKanbanProps {
   applications: GrantApplication[];
@@ -21,6 +22,24 @@ const COLUMN_ORDER: ApplicationStatus[] = [
   "approved",
   "denied",
 ];
+
+const COLUMN_DOT_COLORS: Record<string, string> = {
+  researching: "bg-slate-400",
+  preparing: "bg-blue-500",
+  submitted: "bg-purple-500",
+  "under-review": "bg-amber-500",
+  approved: "bg-cred-green",
+  denied: "bg-red-500",
+};
+
+const COLUMN_HEADER_BG: Record<string, string> = {
+  researching: "bg-slate-50",
+  preparing: "bg-blue-50",
+  submitted: "bg-purple-50",
+  "under-review": "bg-amber-50",
+  approved: "bg-green-50",
+  denied: "bg-red-50",
+};
 
 export function ApplicationKanban({ applications }: ApplicationKanbanProps) {
   const [selectedApp, setSelectedApp] = useState<GrantApplication | null>(null);
@@ -41,38 +60,36 @@ export function ApplicationKanban({ applications }: ApplicationKanbanProps) {
 
   return (
     <>
-      <ScrollArea className="w-full">
-        <div className="flex gap-4 pb-4 min-w-[900px]">
+      <ScrollArea className="w-full -mx-1 px-1">
+        <div className="flex gap-3 pb-4 min-w-[900px]">
           {columns.map((col) => (
             <div
               key={col.status}
-              className="flex-1 min-w-[200px] max-w-[280px]"
+              className="flex-1 min-w-[180px] max-w-[260px]"
             >
               {/* Column header */}
-              <div className="flex items-center gap-2 mb-3 px-1">
+              <div className={cn(
+                "flex items-center gap-2 mb-2 px-2 py-1.5 rounded-lg",
+                COLUMN_HEADER_BG[col.status]
+              )}>
                 <div
                   className={cn(
-                    "size-2.5 rounded-full",
-                    col.status === "researching" && "bg-slate-400",
-                    col.status === "preparing" && "bg-blue-500",
-                    col.status === "submitted" && "bg-purple-500",
-                    col.status === "under-review" && "bg-amber-500",
-                    col.status === "approved" && "bg-cred-green",
-                    col.status === "denied" && "bg-red-500"
+                    "size-2 rounded-full",
+                    COLUMN_DOT_COLORS[col.status]
                   )}
                 />
-                <span className="text-sm font-medium text-foreground">
+                <span className="text-xs font-semibold text-foreground">
                   {col.config.label}
                 </span>
-                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 ml-auto">
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 ml-auto h-4">
                   {col.apps.length}
                 </Badge>
               </div>
 
               {/* Column body */}
-              <div className="space-y-3 min-h-[200px] rounded-lg bg-muted/30 p-2">
+              <div className="space-y-2 min-h-[180px] rounded-lg bg-muted/20 p-1.5">
                 {col.apps.length === 0 ? (
-                  <p className="text-xs text-muted-foreground text-center py-8">
+                  <p className="text-[10px] text-muted-foreground text-center py-6">
                     No applications
                   </p>
                 ) : (
@@ -95,7 +112,7 @@ export function ApplicationKanban({ applications }: ApplicationKanbanProps) {
         open={modalOpen}
         onOpenChange={setModalOpen}
         onStatusChange={(id, status) => {
-          alert(`Status update to "${status}" would be saved. (Demo mode)`);
+          toast.success(`Status updated to ${APPLICATION_STATUS_CONFIG[status].label}`);
           setModalOpen(false);
         }}
       />

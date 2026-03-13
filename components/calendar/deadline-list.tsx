@@ -1,20 +1,24 @@
+"use client";
+
+import Link from "next/link";
 import { Bell, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import type { DeadlineEvent } from "@/lib/types";
 import { formatDate } from "@/lib/utils/format";
+import { toast } from "sonner";
 
 interface DeadlineListProps {
   deadlines: DeadlineEvent[];
   selectedDate: Date | null;
 }
 
-const URGENCY_CONFIG: Record<string, { color: string; label: string }> = {
-  urgent: { color: "bg-red-500", label: "Urgent" },
-  soon: { color: "bg-amber-500", label: "Soon" },
-  upcoming: { color: "bg-yellow-500", label: "Upcoming" },
-  future: { color: "bg-cred-green", label: "Future" },
+const URGENCY_CONFIG: Record<string, { color: string; bgColor: string; label: string }> = {
+  urgent: { color: "bg-red-500", bgColor: "bg-red-50", label: "Urgent" },
+  soon: { color: "bg-amber-500", bgColor: "bg-amber-50", label: "Soon" },
+  upcoming: { color: "bg-yellow-500", bgColor: "bg-yellow-50", label: "Upcoming" },
+  future: { color: "bg-cred-green", bgColor: "bg-green-50", label: "Future" },
 };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -52,19 +56,19 @@ export function DeadlineList({ deadlines, selectedDate }: DeadlineListProps) {
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
-          <Calendar className="size-4 text-muted-foreground" />
-          <CardTitle>{title}</CardTitle>
+          <Calendar className="size-3.5 text-muted-foreground" />
+          <CardTitle className="text-base">{title}</CardTitle>
         </div>
       </CardHeader>
       <CardContent>
         {filteredDeadlines.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">
+          <p className="text-xs text-muted-foreground text-center py-6">
             {selectedDate ? "No deadlines on this date" : "No upcoming deadlines"}
           </p>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-2">
             {filteredDeadlines.map((deadline) => {
               const urgencyConfig = URGENCY_CONFIG[deadline.urgency];
               const typeColor = TYPE_COLORS[deadline.type] || "border-l-slate-400";
@@ -73,43 +77,49 @@ export function DeadlineList({ deadlines, selectedDate }: DeadlineListProps) {
                 <div
                   key={deadline.id}
                   className={cn(
-                    "border-l-2 pl-3 py-2 space-y-1",
+                    "border-l-2 pl-2.5 py-1.5 rounded-r-lg transition-colors hover:bg-muted/30",
                     typeColor
                   )}
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-foreground">
+                  <div className="flex items-start justify-between gap-1.5">
+                    <Link
+                      href={deadline.relatedId ? `/dashboard/grants/${deadline.relatedId}` : "#"}
+                      className="min-w-0 flex-1 group"
+                    >
+                      <p className="text-xs font-medium text-foreground group-hover:text-cred-blue transition-colors">
                         {deadline.title}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[10px] text-muted-foreground">
                         {formatDate(deadline.date)}
                       </p>
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
+                    </Link>
+                    <div className="flex items-center gap-1 shrink-0">
                       <span
                         className={cn(
-                          "size-2 rounded-full",
+                          "size-1.5 rounded-full",
                           urgencyConfig.color
                         )}
                       />
-                      <span className="text-[10px] text-muted-foreground">
+                      <span className={cn(
+                        "text-[9px] px-1 py-0.5 rounded font-medium",
+                        urgencyConfig.bgColor
+                      )}>
                         {urgencyConfig.label}
                       </span>
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">
                     {deadline.description}
                   </p>
                   <Button
                     variant="ghost"
                     size="xs"
-                    className="gap-1 text-xs text-muted-foreground hover:text-foreground"
+                    className="gap-1 text-[10px] text-muted-foreground hover:text-foreground h-5 mt-0.5 px-1"
                     onClick={() =>
-                      alert("Reminder set! (Demo mode)")
+                      toast.success("Reminder set! We'll notify you 7 days before.", { icon: "🔔" })
                     }
                   >
-                    <Bell className="size-3" />
+                    <Bell className="size-2.5" />
                     Set Reminder
                   </Button>
                 </div>

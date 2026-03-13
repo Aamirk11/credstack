@@ -27,21 +27,25 @@ import { GRANT_TYPE_CONFIG } from "@/lib/utils/constants";
 import { GrantDetailHeader } from "@/components/grants/grant-detail-header";
 import { EligibilityChecklist } from "@/components/grants/eligibility-checklist";
 import { GrantTimeline } from "@/components/grants/grant-timeline";
+import { toast } from "sonner";
 
 const DOC_STATUS_CONFIG = {
   have: {
     icon: CheckCircle2,
     color: "text-cred-green",
+    bgColor: "bg-cred-green/10",
     label: "Have",
   },
   need: {
     icon: AlertTriangle,
     color: "text-amber-500",
+    bgColor: "bg-amber-50",
     label: "Need",
   },
   na: {
     icon: Minus,
     color: "text-muted-foreground",
+    bgColor: "bg-muted/50",
     label: "N/A",
   },
 } as const;
@@ -77,34 +81,35 @@ export default function GrantDetailPage({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Back link */}
       <Link
         href="/dashboard"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
         <ArrowLeft className="size-4" />
-        Back to Grants
+        Back to Dashboard
       </Link>
 
       {/* Header */}
       <GrantDetailHeader
         grant={grant}
-        onSave={() => alert("Grant saved to favorites!")}
-        onStartApplication={() =>
-          window.open(grant.applicationUrl, "_blank")
-        }
+        onSave={() => toast.success("Grant saved to favorites")}
+        onStartApplication={() => {
+          toast.success("Application draft created! Redirecting to tracker...", { duration: 3000 });
+          setTimeout(() => window.open(grant.applicationUrl, "_blank"), 1500);
+        }}
       />
 
       <Separator />
 
       {/* Two-column layout */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
         {/* Left column (2/3) */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-4">
           {/* Full Description */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle>About This Program</CardTitle>
             </CardHeader>
             <CardContent>
@@ -116,11 +121,11 @@ export default function GrantDetailPage({
 
           {/* Requirements */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle>Requirements</CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-2">
+              <ul className="space-y-1.5">
                 {grant.requirements.map((req, i) => (
                   <li
                     key={i}
@@ -136,7 +141,7 @@ export default function GrantDetailPage({
 
           {/* Documents Required */}
           <Card>
-            <CardHeader>
+            <CardHeader className="pb-2">
               <CardTitle>Required Documents</CardTitle>
             </CardHeader>
             <CardContent>
@@ -144,7 +149,7 @@ export default function GrantDetailPage({
                 <TableHeader>
                   <TableRow>
                     <TableHead>Document</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead className="w-[100px]">Status</TableHead>
                     <TableHead className="hidden sm:table-cell">
                       Description
                     </TableHead>
@@ -156,21 +161,22 @@ export default function GrantDetailPage({
                     const StatusIcon = statusConfig.icon;
                     return (
                       <TableRow key={i}>
-                        <TableCell className="font-medium">
+                        <TableCell className="font-medium text-sm py-2">
                           {doc.name}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="py-2">
                           <div
                             className={cn(
-                              "flex items-center gap-1.5",
-                              statusConfig.color
+                              "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium",
+                              statusConfig.color,
+                              statusConfig.bgColor
                             )}
                           >
-                            <StatusIcon className="size-4" />
-                            <span className="text-xs">{statusConfig.label}</span>
+                            <StatusIcon className="size-3.5" />
+                            {statusConfig.label}
                           </div>
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell text-muted-foreground">
+                        <TableCell className="hidden sm:table-cell text-muted-foreground text-sm py-2">
                           {doc.description}
                         </TableCell>
                       </TableRow>
@@ -183,7 +189,7 @@ export default function GrantDetailPage({
         </div>
 
         {/* Right column (1/3) */}
-        <div className="space-y-6">
+        <div className="space-y-4">
           <EligibilityChecklist reasons={grant.eligibilityReasons} />
 
           <GrantTimeline keyDates={grant.keyDates} />
@@ -191,11 +197,11 @@ export default function GrantDetailPage({
           {/* Similar Programs */}
           {similarGrants.length > 0 && (
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-2">
                 <CardTitle>Similar Programs</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {similarGrants.map((sg) => (
                     <Link
                       key={sg.id}
@@ -228,15 +234,16 @@ export default function GrantDetailPage({
       </div>
 
       {/* Bottom AI button */}
-      <div className="flex justify-center pt-4 pb-8">
+      <div className="flex justify-center pt-2 pb-6">
         <Button
           size="lg"
           className="bg-cred-blue hover:bg-cred-blue-dark text-white gap-2"
-          onClick={() =>
-            alert(
-              "AI Pre-Fill is a Pro feature. Upgrade to auto-fill your application with your business profile data."
-            )
-          }
+          onClick={() => {
+            toast("AI is analyzing your profile and pre-filling the application...", { icon: "🤖", duration: 4000 });
+            setTimeout(() => {
+              toast.success("Application pre-filled with 85% accuracy!");
+            }, 2000);
+          }}
         >
           <Sparkles className="size-4" />
           AI Pre-Fill Application

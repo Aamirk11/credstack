@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Shield, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -11,7 +11,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { cn } from "@/lib/utils";
+import { CredStackLogo } from "@/components/shared/credstack-logo";
 
 const NAV_LINKS = [
   { label: "Features", href: "#features" },
@@ -24,15 +24,14 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:h-16 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <Shield className="size-7 text-cred-blue" />
-          <span className="text-xl font-bold text-cred-blue">CredStack</span>
+          <CredStackLogo size="sm" />
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-8 md:flex">
+        <nav className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map((link) => (
             <a
               key={link.href}
@@ -62,9 +61,8 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle className="flex items-center gap-2">
-                  <Shield className="size-5 text-cred-blue" />
-                  <span className="text-cred-blue">CredStack</span>
+                <SheetTitle>
+                  <CredStackLogo size="sm" />
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-4 px-4">

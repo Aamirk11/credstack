@@ -1,6 +1,7 @@
 "use client";
 
-import { Clock, FileText, Calendar, StickyNote } from "lucide-react";
+import Link from "next/link";
+import { Clock, FileText, Calendar, StickyNote, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Dialog,
@@ -23,6 +24,7 @@ import {
   formatPercentage,
 } from "@/lib/utils/format";
 import { APPLICATION_STATUS_CONFIG } from "@/lib/utils/constants";
+import { toast } from "sonner";
 
 interface ApplicationDetailModalProps {
   application: GrantApplication | null;
@@ -63,26 +65,35 @@ export function ApplicationDetailModal({
             <Badge className={cn(statusConfig.color, "text-xs")}>
               {statusConfig.label}
             </Badge>
+            <Button
+              variant="ghost"
+              size="xs"
+              className="gap-1 text-xs text-cred-blue ml-auto"
+              render={<Link href={`/dashboard/grants/${application.grantId}`} />}
+            >
+              <ExternalLink className="size-3" />
+              View Grant
+            </Button>
           </div>
-          <DialogTitle>{application.grantName}</DialogTitle>
+          <DialogTitle className="text-lg">{application.grantName}</DialogTitle>
           <DialogDescription>{application.agency}</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Amount & Deadline */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <p className="text-xs text-muted-foreground">Amount Requested</p>
+              <p className="text-[10px] text-muted-foreground uppercase">Amount Requested</p>
               <p className="text-lg font-bold text-cred-gold">
                 {formatCurrency(application.amountRequested)}
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">Deadline</p>
+              <p className="text-[10px] text-muted-foreground uppercase">Deadline</p>
               <p className={cn("text-sm font-semibold", deadlineColor)}>
                 {formatDate(application.deadline)}
                 {daysLeft > 0 && (
-                  <span className="font-normal"> ({daysLeft}d left)</span>
+                  <span className="font-normal text-xs"> ({daysLeft}d left)</span>
                 )}
               </p>
             </div>
@@ -92,13 +103,10 @@ export function ApplicationDetailModal({
 
           {/* Documents progress */}
           <div>
-            <div className="flex items-center gap-1.5 mb-2">
-              <FileText className="size-4 text-muted-foreground" />
-              <span className="text-sm font-medium">Documents</span>
-            </div>
-            <div className="flex items-center justify-between text-sm mb-1">
-              <span className="font-medium">Progress</span>
-              <span className="text-muted-foreground tabular-nums">
+            <div className="flex items-center gap-1.5 mb-1.5">
+              <FileText className="size-3.5 text-muted-foreground" />
+              <span className="text-xs font-medium">Documents</span>
+              <span className="text-xs text-muted-foreground tabular-nums ml-auto">
                 {application.documentsUploaded}/{application.documentsRequired}
               </span>
             </div>
@@ -108,19 +116,20 @@ export function ApplicationDetailModal({
                   ? (application.documentsUploaded / application.documentsRequired) * 100
                   : 0
               }
+              className="h-1.5"
             />
           </div>
 
           {/* Completion (pre-submission) */}
           {["researching", "preparing"].includes(application.status) && (
             <div>
-              <div className="flex items-center justify-between text-sm mb-1">
+              <div className="flex items-center justify-between text-xs mb-1">
                 <span className="font-medium">Completion</span>
                 <span className="text-muted-foreground tabular-nums">
                   {formatPercentage(application.completionPercentage)}
                 </span>
               </div>
-              <Progress value={application.completionPercentage} />
+              <Progress value={application.completionPercentage} className="h-1.5" />
             </div>
           )}
 
@@ -128,10 +137,10 @@ export function ApplicationDetailModal({
           {application.notes && (
             <div>
               <div className="flex items-center gap-1.5 mb-1">
-                <StickyNote className="size-4 text-muted-foreground" />
-                <span className="text-sm font-medium">Notes</span>
+                <StickyNote className="size-3.5 text-muted-foreground" />
+                <span className="text-xs font-medium">Notes</span>
               </div>
-              <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3">
+              <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg p-2.5">
                 {application.notes}
               </p>
             </div>
@@ -139,34 +148,38 @@ export function ApplicationDetailModal({
 
           {/* Next step */}
           {application.nextStep && (
-            <div>
-              <p className="text-xs text-muted-foreground mb-0.5">Next Step</p>
-              <p className="text-sm font-medium text-foreground">
+            <div className="bg-blue-50 rounded-lg p-2.5">
+              <p className="text-[10px] text-muted-foreground mb-0.5">Next Step</p>
+              <p className="text-xs font-medium text-foreground">
                 {application.nextStep}
               </p>
             </div>
           )}
 
           {/* Timeline info */}
-          <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+          <div className="flex flex-wrap gap-3 text-[10px] text-muted-foreground">
             {application.submittedDate && (
               <span className="flex items-center gap-1">
-                <Calendar className="size-3" />
+                <Calendar className="size-2.5" />
                 Submitted: {formatDate(application.submittedDate)}
               </span>
             )}
             <span className="flex items-center gap-1">
-              <Clock className="size-3" />
+              <Clock className="size-2.5" />
               Updated: {formatDate(application.lastUpdated)}
             </span>
           </div>
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="gap-2 sm:gap-0">
           {nextStatus && (
             <Button
+              size="sm"
               className="bg-cred-blue hover:bg-cred-blue-dark text-white"
-              onClick={() => onStatusChange?.(application.id, nextStatus)}
+              onClick={() => {
+                toast.success(`Status updated to ${APPLICATION_STATUS_CONFIG[nextStatus].label}`);
+                onStatusChange?.(application.id, nextStatus);
+              }}
             >
               Move to {APPLICATION_STATUS_CONFIG[nextStatus].label}
             </Button>
@@ -174,7 +187,11 @@ export function ApplicationDetailModal({
           {application.status !== "denied" && (
             <Button
               variant="destructive"
-              onClick={() => onStatusChange?.(application.id, "denied")}
+              size="sm"
+              onClick={() => {
+                toast.success("Status updated to Denied");
+                onStatusChange?.(application.id, "denied");
+              }}
             >
               Mark Denied
             </Button>

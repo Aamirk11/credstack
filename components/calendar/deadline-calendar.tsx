@@ -65,7 +65,7 @@ export function DeadlineCalendar({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle>{format(currentMonth, "MMMM yyyy")}</CardTitle>
           <div className="flex gap-1">
@@ -88,11 +88,11 @@ export function DeadlineCalendar({
       </CardHeader>
       <CardContent>
         {/* Weekday headers */}
-        <div className="grid grid-cols-7 mb-2">
+        <div className="grid grid-cols-7 mb-1">
           {WEEKDAYS.map((day) => (
             <div
               key={day}
-              className="text-center text-xs font-medium text-muted-foreground py-1"
+              className="text-center text-[10px] font-medium text-muted-foreground py-1"
             >
               {day}
             </div>
@@ -100,7 +100,7 @@ export function DeadlineCalendar({
         </div>
 
         {/* Day grid */}
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-7 gap-0.5">
           {calendarDays.map((day) => {
             const dateKey = format(day, "yyyy-MM-dd");
             const dayDeadlines = deadlinesByDate.get(dateKey) || [];
@@ -113,18 +113,18 @@ export function DeadlineCalendar({
                 key={dateKey}
                 onClick={() => onSelectDate(day)}
                 className={cn(
-                  "relative flex flex-col items-center justify-start p-1 h-12 sm:h-14 rounded-md transition-colors",
-                  inMonth ? "text-foreground" : "text-muted-foreground/40",
-                  isSelected && "bg-cred-blue/10 ring-1 ring-cred-blue",
-                  !isSelected && inMonth && "hover:bg-muted/50",
-                  today && !isSelected && "bg-muted"
+                  "relative flex flex-col items-center justify-start min-h-[44px] min-w-[44px] p-1 rounded-lg transition-colors",
+                  inMonth ? "text-foreground" : "text-muted-foreground/30",
+                  isSelected && "bg-cred-blue/10 ring-2 ring-cred-blue shadow-sm",
+                  !isSelected && inMonth && "hover:bg-muted/50 active:bg-muted",
+                  today && !isSelected && "ring-2 ring-cred-blue/40 bg-blue-50/50"
                 )}
               >
                 <span
                   className={cn(
                     "text-sm leading-none",
                     today && "font-bold text-cred-blue",
-                    isSelected && "font-semibold"
+                    isSelected && "font-bold"
                   )}
                 >
                   {format(day, "d")}
@@ -137,13 +137,13 @@ export function DeadlineCalendar({
                       <span
                         key={i}
                         className={cn(
-                          "size-1.5 rounded-full",
+                          "size-2 rounded-full",
                           DEADLINE_TYPE_COLORS[dl.type] || "bg-slate-400"
                         )}
                       />
                     ))}
                     {dayDeadlines.length > 3 && (
-                      <span className="text-[8px] text-muted-foreground">
+                      <span className="text-[7px] text-muted-foreground leading-none">
                         +{dayDeadlines.length - 3}
                       </span>
                     )}
@@ -155,11 +155,11 @@ export function DeadlineCalendar({
         </div>
 
         {/* Legend */}
-        <div className="flex flex-wrap gap-3 mt-4 pt-3 border-t">
+        <div className="flex flex-wrap gap-2.5 mt-3 pt-2 border-t">
           {Object.entries(DEADLINE_TYPE_COLORS).map(([type, color]) => (
-            <div key={type} className="flex items-center gap-1.5">
+            <div key={type} className="flex items-center gap-1">
               <span className={cn("size-2 rounded-full", color)} />
-              <span className="text-[10px] text-muted-foreground capitalize">
+              <span className="text-[9px] text-muted-foreground capitalize">
                 {type.replace(/-/g, " ")}
               </span>
             </div>
